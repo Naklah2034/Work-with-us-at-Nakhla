@@ -6,6 +6,7 @@
   <title>Nakhla - Experience</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
   <style>
+    /* تنسيقات الصفحة */
     body {
       background: linear-gradient(to bottom right, #e8f5e9, #f1f8e9);
       font-family: "Cairo", "Segoe UI", Arial, sans-serif;
@@ -119,8 +120,8 @@
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
-      const theme = localStorage.getItem("mode");  // احصل على الوضع من localStorage (day أو night)
-      if (theme === "night") {
+      const theme = localStorage.getItem("theme");
+      if (theme === "dark") {
         document.body.classList.add("dark-mode");
       }
 
@@ -179,7 +180,7 @@
           data.uploads.push({
             name: files[i].name,
             type: files[i].type,
-            content: e.target.result
+            content: e.target.result  // حفظ الملف كـ base64
           });
           loaded++;
           if (loaded === files.length) {
@@ -192,7 +193,6 @@
       }
     }
 
-    // حفظ البيانات إلى الـ localStorage
     function saveToAdmin(data) {
       let allUsers = JSON.parse(localStorage.getItem("allUsers")) || [];
       allUsers.push(data);
