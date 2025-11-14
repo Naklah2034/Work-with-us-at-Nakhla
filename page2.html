@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nakhla - Form</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-light: linear-gradient(to bottom right, #e8f5e9, #f1f8e9);
+      --bg-dark: linear-gradient(to bottom right, #263238, #37474f);
+      --card-light: #fff;
+      --card-dark: #424242;
+      --text-light: #333;
+      --text-dark: #f1f1f1;
+      --button-light: #4CAF50;
+      --button-dark: #81C784;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: "Cairo", Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark-mode {
+      background: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    .container {
+      background: var(--card-light);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 380px;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark-mode .container {
+      background: var(--card-dark);
+      color: var(--text-dark);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: inherit;
+      box-sizing: border-box;
+      transition: 0.3s;
+    }
+
+    body.dark-mode input {
+      background: #555;
+      border-color: #777;
+      color: #fff;
+    }
+
+    button {
+      background-color: var(--button-light);
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1em;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      background-color: #388E3C;
+    }
+
+    body.dark-mode button {
+      background-color: var(--button-dark);
+      color: #263238;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      input, button {
+        font-size: 0.9em;
+      }
+
+      h2 {
+        font-size: 1.2em;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2 id="titleText"></h2>
+
+    <input type="text" id="name" placeholder="">
+    <input type="number" id="age" placeholder="">
+    <input type="tel" id="phone" placeholder="">
+    <input type="email" id="email" placeholder="">
+
+    <button onclick="saveData()" id="saveBtn"></button>
+  </div>
+
+  <script>
+    // تحميل الإعدادات عندما يتم تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", () => {
+      const lang = localStorage.getItem("lang") || "ar";
+      document.documentElement.lang = lang;
+      document.body.dir = lang === "ar" ? "rtl" : "ltr";
+
+      const t = {
+        ar: {
+          title: "نموذج التسجيل",
+          name: "الاسم الكامل",
+          age: "العمر",
+          phone: "رقم الجوال",
+          email: "البريد الإلكتروني",
+          save: "إرسال",
+          alert: "تم حفظ البيانات بنجاح"
+        },
+        en: {
+          title: "Registration Form",
+          name: "Full Name",
+          age: "Age",
+          phone: "Phone Number",
+          email: "Email Address",
+          save: "Submit",
+          alert: "Your data has been saved successfully"
+        }
+      };
+
+      const text = t[lang];
+
+      document.getElementById("titleText").textContent = text.title;
+      document.getElementById("name").placeholder = text.name;
+      document.getElementById("age").placeholder = text.age;
+      document.getElementById("phone").placeholder = text.phone;
+      document.getElementById("email").placeholder = text.email;
+      document.getElementById("saveBtn").textContent = text.save;
+    });
+
+    // تطبيق الوضع (نهار/ليل) بناءً على قيمة `localStorage`
+    window.addEventListener("load", () => {
+      const mode = localStorage.getItem("mode") || "day";
+      if (mode === "night") {
+        document.body.classList.add("dark-mode");
+      }
+    });
+
+    // حفظ البيانات في localStorage
+    function saveData() {
+      const lang = localStorage.getItem("lang") || "ar";
+      const alerts = {
+        ar: "تم حفظ البيانات بنجاح",
+        en: "Your data has been saved successfully"
+      };
+
+      const userData = {
+        name: document.getElementById("name").value,
+        age: document.getElementById("age").value,
+        phone: document.getElementById("phone").value,
+        email: document.getElementById("email").value
+      };
+
+      localStorage.setItem("userData", JSON.stringify(userData));
+
+      alert(alerts[lang]);
+      window.location.href = "page3.html"; // الانتقال للصفحة التالية
+    }
+
+  </script>
+
+</body>
+</html>

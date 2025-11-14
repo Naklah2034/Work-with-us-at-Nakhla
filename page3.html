@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nakhla - Nationality</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e8f5e9, #f1f8e9);
+      font-family: "Cairo", Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.night-mode {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+      color: #ecf0f1;
+    }
+
+    .container {
+      background: #fff;
+      text-align: center;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 380px;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.night-mode .container {
+      background: #34495e;
+      color: #ecf0f1;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      margin-bottom: 15px;
+      background-color: #f9fff9;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-size: 1em;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2 id="title"></h2>
+
+    <select id="nationality" onchange="resetCity()"></select>
+
+    <h2 id="cityTitle" style="margin-top:10px;"></h2>
+    <select id="city"></select>
+
+    <button onclick="saveNationality()" id="nextBtn"></button>
+  </div>
+
+  <script>
+    // تحميل الإعدادات عند تحميل الصفحة
+    document.addEventListener("DOMContentLoaded", () => {
+      const lang = localStorage.getItem("lang") || "ar";
+      document.documentElement.lang = lang;
+      document.body.dir = lang === "ar" ? "rtl" : "ltr";
+
+      // تطبيق الوضع (نهار/ليل) بناءً على تخزين الـ localStorage
+      const mode = localStorage.getItem("mode") || "day";
+      if (mode === "night") {
+        document.body.classList.add("night-mode");
+      }
+
+      // تعبئة النصوص بناءً على اللغة
+      const t = {
+        ar: {
+          title: "اختر جنسيتك",
+          cityTitle: "اختر مدينتك",
+          next: "التالي",
+          alert: "الرجاء اختيار الجنسية والمدينة",
+          nationalities: [
+            "السعودية", "مصر", "الأردن", "السودان", "سوريا", "فلسطين", "اليمن",
+            "الإمارات", "الكويت", "قطر", "البحرين", "لبنان", "الهند", "باكستان",
+            "بنغلاديش", "الفلبين", "أخرى"
+          ],
+          cities: [
+            "الرياض", "جدة", "الدمام", "مكة", "المدينة", "الطائف",
+            "أبها", "تبوك", "حائل", "نجران", "الخبر", "جيزان"
+          ]
+        },
+        en: {
+          title: "Select your nationality",
+          cityTitle: "Select your city",
+          next: "Next",
+          alert: "Please select both nationality and city",
+          nationalities: [
+            "Saudi Arabia", "Egypt", "Jordan", "Sudan", "Syria", "Palestine", "Yemen",
+            "UAE", "Kuwait", "Qatar", "Bahrain", "Lebanon", "India", "Pakistan",
+            "Bangladesh", "Philippines", "Other"
+          ],
+          cities: [
+            "Riyadh", "Jeddah", "Dammam", "Makkah", "Medina", "Taif",
+            "Abha", "Tabuk", "Hail", "Najran", "Al Khobar", "Jizan"
+          ]
+        }
+      };
+
+      const text = t[lang];
+
+      // تعبئة النصوص في الصفحة
+      document.getElementById("title").textContent = text.title;
+      document.getElementById("cityTitle").textContent = text.cityTitle;
+      document.getElementById("nextBtn").textContent = text.next;
+
+      // تعبئة القائمة المنسدلة للجنسية
+      const nationalitySelect = document.getElementById("nationality");
+      const citySelect = document.getElementById("city");
+
+      nationalitySelect.innerHTML = `<option value="" disabled selected>${lang === "ar" ? "اختر الجنسية" : "Select nationality"}</option>`;
+      text.nationalities.forEach(n => {
+        nationalitySelect.innerHTML += `<option value="${n}">${n}</option>`;
+      });
+
+      // تعبئة قائمة المدن
+      citySelect.innerHTML = `<option value="" disabled selected>${lang === "ar" ? "اختر المدينة" : "Select city"}</option>`;
+      text.cities.forEach(c => {
+        citySelect.innerHTML += `<option value="${c}">${c}</option>`;
+      });
+    });
+
+    function resetCity() {
+      document.getElementById("city").selectedIndex = 0;
+    }
+
+    function saveNationality() {
+      const lang = localStorage.getItem("lang") || "ar";
+      const alertMsg = lang === "ar" ? "الرجاء اختيار الجنسية والمدينة" : "Please select both nationality and city";
+
+      const nationality = document.getElementById("nationality").value;
+      const city = document.getElementById("city").value;
+
+      if (!nationality || !city) {
+        alert(alertMsg);
+        return;
+      }
+
+      // جلب جميع المستخدمين من localStorage
+      const allData = JSON.parse(localStorage.getItem("allUsers")) || [];
+
+      // تعديل آخر مستخدم أو إضافة مستخدم جديد
+      if (allData.length > 0) {
+        allData[allData.length - 1].nationality = nationality;
+        allData[allData.length - 1].city = city;
+      } else {
+        allData.push({ nationality, city });
+      }
+
+      localStorage.setItem("allUsers", JSON.stringify(allData));
+
+      window.location.href = "page4.html";  // الانتقال للصفحة التالية
+    }
+  </script>
+
+</body>
+</html>

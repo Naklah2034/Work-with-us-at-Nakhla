@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nakhla - Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e8f5e9, #f1f8e9);
+      font-family: "Cairo", "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+      color: #ecf0f1;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+    }
+
+    body.dark-mode .container {
+      background: #34495e;
+      color: #ecf0f1;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px 0;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+      transform: scale(1.03);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.9em;
+      text-align: left;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      word-wrap: break-word;
+      max-width: 120px; 
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .file-links {
+      word-wrap: break-word;
+      max-width: 300px;
+      text-align: left;
+    }
+
+    .file-links a {
+      color: #2e7d32;
+      text-decoration: none;
+    }
+
+    /* Button for changing theme */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .theme-toggle:hover {
+      background-color: #388E3C;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      table, th, td {
+        font-size: 0.8em;
+      }
+
+      button {
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Button to toggle theme (Dark/Light) -->
+  <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+
+  <div class="container" id="loginSection">
+    <h2 id="adminTitle">تسجيل دخول الأدمن</h2>
+    <input type="password" id="adminPass" placeholder="أدخل كلمة المرور">
+    <button onclick="checkAdmin()" id="loginBtn">تسجيل الدخول</button>
+  </div>
+
+  <div class="container" id="dataSection" style="display:none;">
+    <h2 id="registeredTitle">المستخدمون المسجلون 🌴</h2>
+    <table>
+      <thead>
+        <tr>
+          <th id="thName">الاسم</th>
+          <th id="thPhone">الجوال</th>
+          <th id="thEmail">الإيميل</th>
+          <th id="thAge">العمر</th>
+          <th id="thNationality">الجنسية</th>
+          <th id="thJob">الوظيفة</th>
+          <th id="thExperience">الخبرة</th>
+          <th id="thFiles">الملفات</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+    <br>
+    <button onclick="clearAll()" id="deleteBtn">🗑️ حذف جميع البيانات</button>
+    <br><br>
+    <button onclick="goHome()" id="homeBtn"></button>
+  </div>
+
+  <script>
+    // Function to toggle dark mode and store preference in localStorage
+    function toggleTheme() {
+      const currentTheme = localStorage.getItem("mode") || "day";
+      if (currentTheme === "day") {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("mode", "night");
+      } else {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("mode", "day");
+      }
+    }
+
+    // Apply theme based on localStorage value
+    document.addEventListener("DOMContentLoaded", () => {
+      const theme = localStorage.getItem("mode") || "day";
+      if (theme === "night") {
+        document.body.classList.add("dark-mode");
+      }
+
+      const lang = localStorage.getItem("lang") || "ar";
+      document.documentElement.lang = lang;
+      document.body.style.direction = lang === "ar" ? "rtl" : "ltr";
+    });
+
+    const ADMIN_PASSWORD = "2034ksa";
+    const texts = {
+      en: {
+        adminTitle: "Admin Login",
+        loginBtn: "Login",
+        registeredTitle: "Registered Users 🌴",
+        deleteBtn: "Delete All Data",
+        wrongPass: "Incorrect password!",
+        table: ["Name", "Phone", "Email", "Age", "Nationality", "Job", "Experience", "Files"],
+        noData: "No data found",
+        confirmDelete: "Are you sure you want to delete all data?",
+        homeBtn: "Home"
+      },
+      ar: {
+        adminTitle: "تسجيل دخول الأدمن",
+        loginBtn: "تسجيل الدخول",
+        registeredTitle: "المستخدمون المسجلون 🌴",
+        deleteBtn: "🗑️ حذف جميع البيانات",
+        wrongPass: "كلمة المرور غير صحيحة!",
+        table: ["الاسم", "الجوال", "الإيميل", "العمر", "الجنسية", "الوظيفة", "الخبرة", "الملفات"],
+        noData: "لا توجد بيانات",
+        confirmDelete: "هل أنت متأكد أنك تريد حذف كل البيانات؟",
+        homeBtn: "الرئيسية"
+      }
+    };
+
+    const lang = localStorage.getItem("lang") || "ar";
+    const t = texts[lang];
+    document.getElementById("adminTitle").textContent = t.adminTitle;
+    document.getElementById("loginBtn").textContent = t.loginBtn;
+    document.getElementById("registeredTitle").textContent = t.registeredTitle;
+    document.getElementById("deleteBtn").textContent = t.deleteBtn;
+    document.getElementById("homeBtn").textContent = t.homeBtn;
+
+    // Add dynamic column headers
+    const headers = ["thName", "thPhone", "thEmail", "thAge", "thNationality", "thJob", "thExperience", "thFiles"];
+    headers.forEach((id, i) => document.getElementById(id).textContent = t.table[i]);
+
+    // Admin login verification
+    function checkAdmin() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === ADMIN_PASSWORD) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("dataSection").style.display = "block";
+        loadUsers();
+      } else {
+        alert("❌ " + t.wrongPass);
+      }
+    }
+
+    // Load all users from localStorage
+    function loadUsers() {
+      const tbody = document.getElementById("userTable");
+      tbody.innerHTML = "";
+      const users = JSON.parse(localStorage.getItem("allUsers")) || [];
+
+      if (users.length === 0) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="8">${t.noData}</td>`;
+        tbody.appendChild(row);
+        return;
+      }
+
+      users.forEach(user => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.name || "-"}</td>
+          <td>${user.phone || "-"}</td>
+          <td>${user.email || "-"}</td>
+          <td>${user.age || "-"}</td>
+          <td>${user.nationality || "-"}</td>
+          <td>${user.job || "-"}</td>
+          <td>${user.experience || "-"}</td>
+        `;
+
+        // Display file links if present
+        if (user.uploads && user.uploads.length > 0) {
+          const fileLinks = user.uploads.map(file => {
+            return `<a href="${file.content}" target="_blank">${file.name}</a>`;
+          }).join(", ");
+          row.innerHTML += `<td class="file-links">${fileLinks}</td>`;
+        } else {
+          row.innerHTML += `<td>-</td>`; // If no files
+        }
+
+        tbody.appendChild(row);
+      });
+    }
+
+    // Clear all user data from localStorage
+    function clearAll() {
+      if (confirm("🗑️ " + t.confirmDelete)) {
+        localStorage.removeItem("allUsers");
+        loadUsers();
+      }
+    }
+
+    // Navigate to home page
+    function goHome() {
+      window.location.href = "index.html";  // Go back to the home page
+    }
+  </script>
+</body>
+</html>

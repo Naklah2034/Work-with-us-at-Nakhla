@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nakhla - Job</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to bottom right, #e8f5e9, #f1f8e9);
+      font-family: "Cairo", Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(to bottom right, #2c3e50, #34495e);
+      color: #ecf0f1;
+    }
+
+    .container {
+      background: white;
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 380px;
+    }
+
+    body.dark-mode .container {
+      background: #34495e;
+      color: #ecf0f1;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 25px;
+      font-size: 1.4em;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 15px 0;
+      font-size: 1.1em;
+      border-radius: 12px;
+      cursor: pointer;
+      width: 100%;
+      margin: 10px 0;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background-color: #388E3C;
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 480px) {
+      h2 {
+        font-size: 1.2em;
+      }
+
+      button {
+        font-size: 1em;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2 id="jobTitle"></h2>
+
+    <button onclick="selectJob('Organizer')" id="orgBtn"></button>
+    <button onclick="selectJob('Guard')" id="guardBtn"></button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // تحميل الوضع من localStorage
+      const theme = localStorage.getItem("mode") || "day"; // احصل على وضع النهار/الليل من localStorage
+      if (theme === "night") {
+        document.body.classList.add("dark-mode"); // تطبيق الوضع الليلي إذا تم تحديده
+      }
+
+      let lang = localStorage.getItem("lang") || "ar"; // تحميل اللغة المخزنة من localStorage
+
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
+
+      const t = {
+        ar: {
+          title: "اختر الوظيفة",
+          organizer: "منظم",
+          guard: "حارس"
+        },
+        en: {
+          title: "Select your role",
+          organizer: "Organizer",
+          guard: "Guard"
+        }
+      };
+
+      const text = t[lang];
+      document.getElementById("jobTitle").textContent = text.title;
+      document.getElementById("orgBtn").textContent = text.organizer;
+      document.getElementById("guardBtn").textContent = text.guard;
+    });
+
+    // حفظ الوظيفة التي تم اختيارها
+    function selectJob(role) {
+      const lang = localStorage.getItem("lang") || "ar"; // احصل على اللغة المخزنة من localStorage
+      let data = JSON.parse(localStorage.getItem("userData")) || {}; // جلب بيانات المستخدم من localStorage
+
+      if (role === "Organizer") {
+        data.job = (lang === "ar") ? "منظم" : "Organizer"; // حفظ الوظيفة المختارة باللغة المناسبة
+      } else {
+        data.job = (lang === "ar") ? "حارس" : "Guard";
+      }
+
+      localStorage.setItem("userData", JSON.stringify(data)); // تخزين البيانات في localStorage
+
+      window.location.href = "page5.html"; // الانتقال إلى الصفحة التالية
+    }
+  </script>
+
+</body>
+</html>
