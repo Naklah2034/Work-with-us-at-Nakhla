@@ -184,6 +184,20 @@
         localStorage.setItem("mode", "day");
       }
     }
+    const logo = document.getElementById("secretLogo");  // الحصول على الشعار
+let clickCount = 0;  // عداد النقرة
+let clickTimer;  // مؤقت لإعادة تعيين العداد إذا تأخر النقر
+
+logo.addEventListener('click', () => {
+  clickCount++;  // زيادة العداد مع كل نقرة
+  clearTimeout(clickTimer);  // إعادة تعيين المؤقت إذا تم النقر مجددًا قبل انتهاء المهلة
+  clickTimer = setTimeout(() => { clickCount = 0; }, 800);  // إعادة تعيين العداد بعد 800 ملي ثانية
+
+  if (clickCount === 3) {  // إذا تم النقر ثلاث مرات
+    window.location.href = 'admin.html';  // الانتقال إلى صفحة الأدمن
+  }
+});
+
   </script>
 
 </body>
